@@ -35,8 +35,8 @@ setwd(file.path(lake,year,light_type))
 imgs <- listFiles("jpg")
 
 digitizeRadii(imgs,
-              reading=reader_initials,
-              suffix=read_num,
+              reading=paste0(reader_initials,"_",read_num),
+              suffix = paste0(reader_initials,"_",read_num),
               edgeIsAnnulus = edge_setting,
               windowSize = size_window,
               col.info = color_id,
