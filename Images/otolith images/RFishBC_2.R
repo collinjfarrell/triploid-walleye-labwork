@@ -5,7 +5,7 @@ library(tidyverse)
 ### Working Directory
 #Change the following settings to set the working directory to the folder the samples you are working on are in
 
-lake <- "JAX" #Three letter code for the lake 
+lake <- "PRW" #Three letter code for the lake 
 year <- "2019" #Year
 light_type <- "Transmitted" #Transmitted or Reflected - Be sure to spell exactly!
 
@@ -15,7 +15,7 @@ edge_setting <- FALSE
 #If fish was caught prior to May 1, set to true
 #If fish was caught on or after May 1, set to false
 
-reader_initials <- "CJF" #Use your initials
+reader_initials <- "MJS" #Use your initials
 read_num <- "1" #change if you read individual more than one
 
 size_window <- 12 #controls window size
@@ -30,7 +30,7 @@ color_selected_points <- "magenta" #changes color of points
 
 ### Do not change the code below
 
-setwd(file.path(lake,year,light_type))
+setwd(file.path(lake,year,light_type)) # only run this line once
 
 imgs <- listFiles("jpg")
 
