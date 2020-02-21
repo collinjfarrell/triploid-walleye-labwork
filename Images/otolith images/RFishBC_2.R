@@ -45,4 +45,3 @@ digitizeRadii(imgs,
               scaleBarUnits = scale_bar_unit,
               col.sel = color_selected_points
               )
-q
