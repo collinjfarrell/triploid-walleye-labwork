@@ -14,7 +14,7 @@ dfrad_wide %<>% mutate(rep = 1,
 dfrad_long <- combineData(fns)
 
 
-ggplot(dfrad,aes(agecap,radcap))+
+ggplot(dfrad_wide,aes(agecap,radcap))+
   geom_point()
 
 ggplot(dfrad_long,aes(as.factor(ann),rad))+
