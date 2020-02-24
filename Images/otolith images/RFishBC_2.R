@@ -7,15 +7,15 @@ library(tidyverse)
 
 lake <- "JAX" #Three letter code for the lake 
 year <- "2019" #Year
-light_type <- "Transmitted" #Transmitted or Reflected - Be sure to spell exactly!
+light_type <- "Reflected" #Transmitted or Reflected - Be sure to spell exactly!
 
 ### digitizeRadii() options
 
 edge_setting <- FALSE 
-#If fish was caught prior to May 1, set to true
-#If fish was caught on or after May 1, set to false
+#If fish was caught prior to May 1, set to TRUE
+#If fish was caught on or after May 1, set to FALSE
 
-reader_initials <- "MJS" #Use your initials
+reader_initials <- "JRS" #Use your initials
 read_num <- "1" #change if you read individual more than one
 
 size_window <- 12 #controls window size
@@ -45,4 +45,3 @@ digitizeRadii(imgs,
               scaleBarUnits = scale_bar_unit,
               col.sel = color_selected_points
               )
-q
