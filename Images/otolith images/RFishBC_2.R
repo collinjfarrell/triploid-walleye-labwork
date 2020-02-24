@@ -5,7 +5,7 @@ library(tidyverse)
 ### Working Directory
 #Change the following settings to set the working directory to the folder the samples you are working on are in
 
-lake <- "PRW" #Three letter code for the lake 
+lake <- "JAX" #Three letter code for the lake 
 year <- "2019" #Year
 light_type <- "Transmitted" #Transmitted or Reflected - Be sure to spell exactly!
 
