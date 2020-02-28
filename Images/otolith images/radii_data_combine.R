@@ -1,6 +1,7 @@
 library(RFishBC)
 library(tidyverse)
 library(magrittr)
+library(FSA)
 
 fns <- listFiles("rds")
 
@@ -14,8 +15,27 @@ dfrad_wide %<>% mutate(rep = 1,
 dfrad_long <- combineData(fns)
 
 
-ggplot(dfrad_wide,aes(agecap,radcap))+
-  geom_point()
+ggplot(dfrad_wide,aes(agecap,radcap,color = reading))+
+  geom_jitter()
 
 ggplot(dfrad_long,aes(as.factor(ann),rad))+
   geom_boxplot()
+
+
+
+age_comp <- dfrad_wide %>%
+  select(fishid,light_type,reading,agecap) %>%
+  pivot_wider(id_cols = fishid,names_from=reading,values_from = agecap)
+
+age_precision <- agePrecision(~CJF_1+JRS_1 + LEL_1 + MJS_1,data=age_comp)
+summary(age_precision,what="precision")
+
+age_precision_jrs <- agePrecision(~CJF_1 + JRS_1, data = age_comp)
+summary(age_precision_jrs,what="precision")
+
+age_precision_lel <- agePrecision(~CJF_1 + LEL_1, data = age_comp)
+summary(age_precision_lel,what="precision")
+
+age_precision_mjs <- agePrecision(~CJF_1 + MJS_1, data = age_comp)
+summary(age_precision_mjs,what="precision")
+summary(age_precision_mjs, what="symmetry")
