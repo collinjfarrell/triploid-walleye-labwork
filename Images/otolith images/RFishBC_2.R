@@ -2,12 +2,8 @@ library(RFishBC)
 library(tidyverse)
 
 #####  Settings #####
-### Working Directory
-#Change the following settings to set the working directory to the folder the samples you are working on are in
 
-lake <- "NST" #Three letter code for the lake 
-year <- "2019" #Year
-light_type <- "Transmitted" #Transmitted or Reflected - Be sure to spell exactly!
+### Set Working Directory Manually
 
 ### digitizeRadii() options
 
@@ -29,8 +25,6 @@ color_selected_points <- "magenta" #changes color of points
 
 
 ### Do not change the code below
-
-setwd(file.path(lake,year,light_type)) # only run this line once
 
 imgs <- listFiles("jpg")
 
