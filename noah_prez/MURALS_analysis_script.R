@@ -7,7 +7,6 @@ gonads <- read_csv("Data/Calorimetry/Gonads/nar_gonad_ed.csv") %>%
          ED_ww = percent_DM*corrected_gross_heat)  %>%
   filter(percent_DM != 0)
 
-gonads_energy <- gonads %>%
   
 
 gonads_grouped <- gonads %>%
@@ -21,8 +20,10 @@ ggplot(gonads, aes(y = ED_ww, x = percent_DM))+
 
 summary(lm(ED_ww ~ percent_DM, data = gonads))
 
-ggplot(gonads_grouped, aes(y = mean_ED, x = percent_DM))+
-  geom_point()
+ggplot(gonads_grouped, aes(y = mean_ED, x = percent_DM*100))+
+  geom_point()+
+  labs(x = "Dry Matter Content (%)", y = "Mean Energy Density (kJ/g wet mass)")+
+  theme_classic()
 
 summary(lm(log(mean_ED)~ log(percent_DM), data = gonads_grouped))
 
