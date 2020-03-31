@@ -12,12 +12,8 @@ edge_setting <- FALSE
 #If fish was caught on or after May 1, set to FALSE
 
 
-reader_initials <- "CJF" #Use your initials
-read_num <- "2" #change if you read individual more than one
-
-reader_initials <- "LEL" #Use your initials
+reader_initials <- "NGA" #Use your initials
 read_num <- "1" #change if you read individual more than one
-
 
 size_window <- 12 #controls window size
 color_id <- "grey70" #controls color of ID text
