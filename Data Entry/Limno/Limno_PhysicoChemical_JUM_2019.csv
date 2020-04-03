@@ -1,0 +1,4 @@
+waterbody,limnoid,date,time,stationid,maxdepth,secchi1,secchi2,secchimean,conductivity,turbidity,tds,salt,ph
+JUM,JUM052919L,5/29/2019,1316,JUM05,6,3.3,3.1,3.2,1815,3.47,1.29,1.1,8.47
+JUM,JUM062019L,6/20/2019,1202,JUM03,5.7,2.2,2.3,2.25,17.92,3.61,1.27,1.07,8.49
+JUM,JUM071819L,7/18/2019,1200,JUM05,6,2.4,2.4,2.4,,5.92,,,
