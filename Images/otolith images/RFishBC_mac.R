@@ -12,7 +12,7 @@ edge_setting <- FALSE
 #If fish was caught on or after May 1, set to FALSE
 
 
-reader_initials <- "JRS" #Use your initials
+reader_initials <- "LEL" #Use your initials
 read_num <- "1" #change if you read individual more than one
 
 
