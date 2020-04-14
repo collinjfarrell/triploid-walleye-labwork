@@ -102,3 +102,12 @@ age_bias_mjs <- ageBias(MJS_1 ~ CJF_1, data=age_comp)
 plot(age_bias_mjs)
 plotAB(age_bias_mjs,what="numbers")
 
+# CJF to LSR (Lindsey Roberts)
+age_precision_lsr <- agePrecision(~CJF_1 + LSR_1, data = age_comp)
+summary(age_precision_lsr,what="precision")
+summary(age_precision_lsr, what="symmetry")
+
+age_bias_lsr <- ageBias(LSR_1 ~ CJF_1, data=age_comp)
+plot(age_bias_lsr)
+plotAB(age_bias_lsr,what="numbers")
+
