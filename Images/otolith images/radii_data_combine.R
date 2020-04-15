@@ -24,17 +24,16 @@ dfrad_long <- dfrad_wide %>%
                names_prefix = "rad",
                values_to = "rad",
                values_drop_na = TRUE) %>%
-  mutate(waterbody = str_sub(id,3,5))
+  mutate(waterbody = str_sub(id,3,5),
+         ann = as.integer(ann))
 
 
 
 ggplot(dfrad_wide,aes(agecap,radcap,color = reading))+
   geom_jitter()
 
-ggplot(dfrad_long,aes(as.factor(ann),rad,fill = reading))+
+ggplot(dfrad_long,aes(ann,rad,group = ann))+
   geom_boxplot() +
-
-
   facet_wrap(light_type~waterbody)
 
 
