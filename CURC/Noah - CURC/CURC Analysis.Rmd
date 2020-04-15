@@ -1,0 +1,70 @@
+---
+title: "CURC analysis"
+author: "Collin Farrell"
+date: "4/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_knit$set(options(digits = 3))
+knitr::opts_chunk$set(fig.align = "center") 
+```
+
+```{r}
+library(magrittr)
+library(tidyverse)
+```
+
+
+## Gonad Energy Density
+
+```{r}
+gonad_dry <- read_csv("gonad_dry.csv")
+
+gonad_ed <- read_csv("gonad_ed.csv")
+  
+gonad_group <- read_csv("gonad_grouped.csv") %>%
+  filter(ploidy == "3N" & percent_dm < 40)
+```
+
+Below I plotted the relationship between energy density (calorimetry) and % dry matter for females of known ploidy captured at Narraguinnep. Pretty clear seperation here with the exception of a possible triploid outlier, need to check about this point.
+
+```{r}
+ggplot(gonad_group, aes(y = mean_ED, x = percent_DM*100))+
+  geom_point(aes(color = ploidy), size = 4)+
+  geom_smooth(method = "lm", color = "black")+
+  labs(x = "Dry Matter Content (%)", y = "Mean Energy Density (kJ/g wet mass)")+
+  theme_classic()+
+  theme(text = element_text(size = 28))+
+  annotate()
+```
+
+The $R^2$ for the log-log regression on energy density ~ % dry matter is 0.9902! The equation for this relationship is:
+
+$$ED_{gonad} = 28.11 \times DM^{1.108} $$
+where $ED_{gonad}$ is gonad energy density (MJ/kg WW), and DM is gonad dry matter content (%).
+
+```{r}
+summary(lm(log(mean_ED)~ log(percent_DM), data = gonad_group))
+```
+
+Below show boxplots comparing triploid and diploid females and associated summary statistics:
+
+```{r}
+ggplot(gonad_group, aes(y = mean_ED, x = ploidy, fill = ploidy))+
+  geom_boxplot()+
+  labs(x = "Ploidy)", y = "Mean Energy Density (kJ/g wet mass)")+
+  theme_classic()
+```
+
+```{r}
+gonad_group %>%
+  group_by(ploidy) %>%
+  summarize(n = n(),
+            'Mean Energy Density' = mean(mean_ED),
+            'SD Energy Density' = sd(mean_ED)) %>%
+  kable()
+```
