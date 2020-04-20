@@ -24,17 +24,16 @@ dfrad_long <- dfrad_wide %>%
                names_prefix = "rad",
                values_to = "rad",
                values_drop_na = TRUE) %>%
-  mutate(waterbody = str_sub(id,3,5))
+  mutate(waterbody = str_sub(id,3,5),
+         ann = as.integer(ann))
 
 
 
 ggplot(dfrad_wide,aes(agecap,radcap,color = reading))+
   geom_jitter()
 
-ggplot(dfrad_long,aes(as.factor(ann),rad,fill = reading))+
+ggplot(dfrad_long,aes(ann,rad,group = ann))+
   geom_boxplot() +
-
-
   facet_wrap(light_type~waterbody)
 
 
@@ -101,4 +100,13 @@ summary(age_precision_mjs, what="symmetry")
 age_bias_mjs <- ageBias(MJS_1 ~ CJF_1, data=age_comp)
 plot(age_bias_mjs)
 plotAB(age_bias_mjs,what="numbers")
+
+# CJF to LSR (Lindsey Roberts)
+age_precision_lsr <- agePrecision(~CJF_1 + LSR_1, data = age_comp)
+summary(age_precision_lsr,what="precision")
+summary(age_precision_lsr, what="symmetry")
+
+age_bias_lsr <- ageBias(LSR_1 ~ CJF_1, data=age_comp)
+plot(age_bias_lsr)
+plotAB(age_bias_lsr,what="numbers")
 
