@@ -17,6 +17,9 @@ knitr::opts_chunk$set(fig.align = "center")
 library(magrittr)
 library(tidyverse)
 library(latex2exp)
+library(nlme)
+library(emmeans)
+library(MuMIn)
 ```
 
 
@@ -25,31 +28,99 @@ library(latex2exp)
 ```{r}
 gonad_dry <- read_csv("gonad_dry.csv")
 
-gonad_ed <- read_csv("gonad_ed.csv")
+gonad_ed <- read_csv("gonad_ed.csv") %>% 
+    filter(percent_DM < 0.40) %>% #removes possible triploid outlier
+  mutate(development = ifelse(goncond == 3, "Mature", ifelse(goncond == 2, "Developing", "Immature"))) %>%
+  mutate(development = fct_relevel(development,c("Immature","Developing", "Mature")))
   
 gonad_group <- read_csv("gonad_grouped.csv") %>%
-  filter(percent_DM < 0.40)
+  filter(percent_DM < 0.40) %>% #removes possible triploid outlier
+  mutate(development = ifelse(goncond == 3, "Mature", ifelse(goncond == 2, "Developing", "Immature"))) %>%
+  mutate(development = fct_relevel(development,c("Immature","Developing", "Mature")))
 ```
 
-Below I plotted the relationship between energy density (calorimetry) and % dry matter for females of known ploidy captured at Narraguinnep. Pretty clear seperation here with the exception of a possible triploid outlier, need to check about this point.
+# Comparing Maturity Levels
+
+```{r include=FALSE}
+lme1 <- lmerTest::lmer(ED_ww ~ development+(1|fishid), data = gonad_ed) #mixed-effects ANOVA
+summary(lme1)
+```
+
+```{r include=FALSE}
+emmeans(lme1,pairwise~development) #pairwise comparisons
+```
 
 ```{r}
-ggplot(gonad_group, aes(y = mean_ED, x = percent_DM*100))+
-  geom_point(aes(color = ploidy), size = 4)+
-  geom_smooth(method = "lm", color = "black")+
-  labs(x = "Dry Matter Content (%)", y = "Mean Energy Density (J/g wet mass)", color = "Ploidy")+
+ggplot(gonad_group, aes(y = mean_ED, x = development))+
+  geom_boxplot(aes(fill = development), color = "grey50")+
+  labs(x = "Developmental Stage", y = "Mean Energy Density (J/g wet mass)", color = "Development")+
   theme_classic()+
-  theme(text = element_text(size = 28))
+  geom_hline(yintercept = 2.41, lty = "dashed")+
+  theme(text = element_text(size = 28))+
+  scale_fill_manual(name = "Development",
+                     labels = c("Immature","Developing","Mature"),
+                     values = c("#FAB45A","#AEB4C2","#262B30"))+
+    theme(text = element_text(size = 28))
+    
 ```
 
-The $R^2$ for the log-log regression on energy density ~ % dry matter is 0.9902! The equation for this relationship is:
+## Linear Mixed Model
 
-$$ED_{gonad} = 28.11 \times DM^{1.108} $$
+```{r}
+lme2 <- lmerTest::lmer(log(ED_ww)~log(percent_DM) + (log(percent_DM)|fishid),data= gonad_ed)
+summary(lme2)
+```
+
+```{r}
+r.squaredGLMM(lme2)
+```
+
+Below I plotted the relationship between energy density (calorimetry) and % dry matter for females of known ploidy captured at Narraguinnep. 
+
+The marginal $R^2$ for the log-log regression on energy density ~ % dry matter is 0.9816, the conditional $R^2$ was 0.9989! The equation for this relationship is:
+
+$$ED_{gonad} = 31.71 \times DM^{1.171} $$
 where $ED_{gonad}$ is gonad energy density (MJ/kg WW), and DM is gonad dry matter content (%).
 
 ```{r}
-summary(lm(log(mean_ED)~ log(percent_DM), data = gonad_group))
+ci<- confint(lme2) 
+
+ci %<>% as_tibble()
+
+lwr_a <- ci[5,1]
+upr_a <- ci[5,2]
+
+lwr_b <- ci[6,1]
+upr_b <- ci[6,2]
+
+preddata <- tibble(percent_DM = seq(0,0.5, by = 0.001))
+
+preddata %<>% mutate(ED_ww = exp(fixef(lme2)[1])*percent_DM^fixef(lme2)[2])
+
+predupr <- tibble(percent_DM = seq(0,0.5, by = 0.001))
+
+predupr %<>%mutate(ED_ww = exp(upr_a[[1]])*percent_DM^upr_b[[1]])
+
+predlwr <- tibble(percent_DM = seq(0,0.5, by = 0.001))
+
+predlwr %<>%mutate(ED_ww = exp(lwr_a[[1]])*percent_DM^lwr_b[[1]])
+
+ggplot(gonad_ed, aes(y = ED_ww, x = percent_DM*100))+
+  geom_point(aes(color = development, shape = development), size = 4)+
+  geom_line(data=preddata)+
+  geom_line(data=predupr, lty = "dashed")+
+  geom_line(data =predlwr, lty = "dashed")+
+  labs(x = "Dry Matter Content (%)", y = "Energy Density (J/g wet mass)", color = "Development")+
+  theme_classic()+
+  theme(text = element_text(size = 28))+
+  scale_color_manual(name = "Development",
+                     labels = c("Immature","Developing","Mature"),
+                     values = c("#FAB45A","#AEB4C2","#262B30"))+
+    scale_shape_manual(name = "Development",
+                     labels = c("Immature","Developing","Mature"),
+                     values = c(15,16,17))
 ```
+
 
 Below show boxplots comparing triploid and diploid females and associated summary statistics:
 
@@ -66,5 +137,5 @@ gonad_group %>%
   summarize(n = n(),
             'Mean Energy Density' = mean(mean_ED),
             'SD Energy Density' = sd(mean_ED)) %>%
-  kable()
+  knitr::kable()
 ```
