@@ -36,29 +36,24 @@ ggplot(dfrad_long,aes(ann,rad,group = ann))+
   geom_boxplot() +
   facet_wrap(light_type~waterbody)
 
+rads <- dfrad_long %>%
+  group_by(fishid,ann) %>%
+  summarize(rad_mean = mean(rad),
+            rad_sd = sd(rad),
+            agecap_mean = mean(agecap))%>%
+  ungroup()
 
-
-
+ggplot(data = rads,aes(ann, rad_mean))+
+  geom_pointrange(aes(ymin = (rad_mean-2*rad_sd),
+                  ymax = (rad_mean+2*rad_sd)),
+                  position = "jitter")
+  
 age_comp <- dfrad_wide %>%
   select(fishid,light_type,reading,agecap) %>%
   pivot_wider(id_cols = fishid,names_from=reading,values_from = agecap)
 
-# Compare All 
-age_precision <- agePrecision(~CJF_1+CJF_2 + JRS_1 + LEL_1,data=age_comp)
-  select(id,light_type,reading,agecap) %>%
-  pivot_wider(id_cols = id,names_from=reading,values_from = agecap)
 
-# Compare All 
-age_precision <- agePrecision(~CJF+CJF_1 + JRS_1 + LEL_1,data=age_comp)
-summary(age_precision,what="precision")
-summary(age_precision,what="detail")
-
-
-# Self Comparison (CJF - CJF)
-
-age_precision_cjf <- agePrecision(~CJF_1 + CJF_2,data=age_comp)
-
-age_precision_cjf <- agePrecision(~CJF + CJF_2,data=age_comp)
+age_precision_cjf <- agePrecision(~CJF_1 + CJF_2 + CJF_3,data=age_comp)
 
 summary(age_precision_cjf,what = "precision")
 summary(age_precision_cjf,what="difference")
@@ -67,7 +62,6 @@ summary(age_precision_cjf,what="details")
 
 
 age_bias_cjf <- ageBias(CJF_1~CJF_2, data=age_comp)
-age_bias_cjf <- ageBias(CJF~CJF_2, data=age_comp)
 
 plot(age_bias_cjf)
 plotAB(age_bias_cjf,what="numbers")
