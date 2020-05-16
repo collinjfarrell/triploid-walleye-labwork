@@ -7,13 +7,13 @@ library(tidyverse)
 
 ### digitizeRadii() options
 
-edge_setting <- TRUE 
-#If fish was caught prior to July 1, set to TRUE
-#If fish was caught on or after July 1, set to FALSE
+edge_setting <- FALSE 
+#If fish was caught prior to May 1, set to TRUE
+#If fish was caught on or after May 1, set to FALSE
 
 
 reader_initials <- "CJF" #Use your initials
-read_num <- "3" #change if you read individual more than one
+read_num <- "1" #change if you read individual more than one
 
 size_window <- 12 #controls window size
 color_id <- "grey70" #controls color of ID text
