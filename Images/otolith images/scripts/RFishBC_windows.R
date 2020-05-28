@@ -13,7 +13,7 @@ edge_setting <- FALSE
 
 
 reader_initials <- "CJF" #Use your initials
-read_num <- "1" #change if you read individual more than one
+read_num <- "3" #change if you read individual more than one
 
 size_window <- 12 #controls window size
 color_id <- "grey70" #controls color of ID text
@@ -30,6 +30,7 @@ color_selected_points <- "magenta" #changes color of points
 ### Do not change the code below
 
 imgs <- listFiles("jpg")
+
 
 digitizeRadii(imgs,
               reading=paste0(reader_initials,"_",read_num),
