@@ -20,19 +20,28 @@ ggplot(standards2)+
 
 # Benzoic Acid Standard 26.454
 
-26.453 - mean(standards$corrected_gross_heat)
+mu <- mean(standards$corrected_gross_heat)- 26.453 
 
-sd(standards$corrected_gross_heat)
+var <- (sd(standards$corrected_gross_heat))^2
 
 ### Bayesian Regression ###
 library(rstanarm)
+library(lme4)
 
-ed <- read_csv("gonad_data_for_paper.csv")                                                                                                                   
+ed <- read_csv("gonad_data_for_paper.csv") %>%
+  mutate(gsi = gonww/ww)
 
 
-glm_post1 <- stan_glm(ED_ww~percent_DM, data=ed, family=gaussian)
+glm_post1 <- stan_lmer(ED_ww~sex*percent_DM+(1|fishid),
+                       data=ed,
+                       prior = normal(mu,var))
 summary(glm_post1)
 pp_check(glm_post1)
 
-glm_fit <- lm(ED_ww~percent_DM, data=ed                                                                                        )
+glm_fit <- lmer(ED_ww~percent_DM*sex+(1|fishid), data=ed)
 summary(glm_fit)
+
+ggplot(ed,aes(x = percent_DM, y = ED_ww, color = sex))+
+  geom_point()
+
+
