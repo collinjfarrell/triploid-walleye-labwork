@@ -7,7 +7,7 @@ library(tidyverse)
 
 ### digitizeRadii() options
 
-edge_setting <- TRUE
+edge_setting <- FALSE
 #If fish was caught prior to May 1, set to TRUE
 #If fish was caught on or after May 1, set to FALSE
 
